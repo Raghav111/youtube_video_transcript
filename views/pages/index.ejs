@@ -4,93 +4,122 @@
 <html lang="en">
 
 <head>
-    <% include ../partials/head %>
+  <% include ../partials/head %>
 </head>
-<body class="container">
 
-    <header>
-        <% include ../partials/header %>
-    </header>
-        <br/><br/>
-    <main>
-        <form class="form-inline">
-            <div class="form-group">
-                <label for="url"></label>
-                <input type="url" style="width:1000px;"required class="form-control" id="url" placeholder="Enter the link of the youtube video you want to download. Example URL : https://www.youtube.com/watch?v=YaDvRdLMkHs">
-                <!-- <small id="emailHelp" class="form-text text-muted">Example URL : https://www.youtube.com/watch?v=YaDvRdLMkHs </small> -->
+<body>
+
+  <header>
+    <% include ../partials/header %>
+  </header>
+  <main>
+    <nav class="navbar navbar-expand-xl navbar-light shadow p-3 mb-5 bg-white rounded" style="
+      background-color: #e3f2fd;>
+      <
+      a class=;
+      height: 67px;
+      " navbar-brand"="" href="#">
+      <img src="/static/images/yt.png" height="30" style="margin-left: 10px;padding-left: 20px;padding-right: 20px;margin-right: 10px;">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <form class="form-inline" style="
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: 100px;
+    margin-right: 10px;
+">
+          <div class="input-group mb-3" style="margin-top: 16px;">
+            <label for="url"></label>
+            <input type="url" style="width:640px;" required class="form-control" id="url" placeholder="Enter video link here">
+            <!-- <small id="emailHelp" class="form-text text-muted">Example URL : https://www.youtube.com/watch?v=YaDvRdLMkHs </small> -->
+            <div class="input-group-append">
+              <button id="submit" class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
             </div>
-            <button id="submit" class="btn btn-default">Submit</button>
-            <img id="loader" hidden src="/static/images/ajax-loader.gif"></img>
-        </form>
-        <br/><br/>
+          </div>
 
-        <!-- <div class="jumbotron">
+          <img id="loader" hidden src="/static/images/ajax-loader.gif"></img>
+        </form>
+        <!--<div class="navbar-nav">
+            <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="#">Features</a>
+            <a class="nav-item nav-link" href="#">Pricing</a>
+            <a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>-->
+      </div>
+      </div>
+    </nav>
+
+
+    <!-- <div class="jumbotron">
             <h1>Youtube Subs Transcripter</h1>
             <p>Fetch transcript from youtube videos</p>
         </div> -->
 
 
-        <div id="content" hidden  class="panel panel-default">
-            <div style= "height:45px; padding:5px;" class="panel-heading">
-                Transcript
-            </div>
-            <div class="panel-body"> Content </div>
-        </div>
-    </main>
+    <div id="content" hidden class="panel panel-default">
+      <div style="height:45px; padding:5px;" class="panel-heading">
+        Transcript
+      </div>
+      <div class="panel-body"> Content </div>
+    </div>
+  </main>
 
-    <footer>
-        <% include ../partials/footer %>
-    </footer>
+  <footer>
+    <% include ../partials/footer %>
+  </footer>
 
 </body>
+
 </html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
 
 <script>
-$('#submit').click(function(event) {
-   event.preventDefault();
-   $('#loader').show();
-   $.ajax({
+  $('#submit').click(function(event) {
+    event.preventDefault();
+    $('#loader').show();
+    $.ajax({
       type: 'POST',
-      url : 'https://' + location.hostname + ':' + location.port + '/ajax',
-      data :  {
-          "url" : $('#url').val()
+      url: 'https://' + location.hostname + ':' + location.port + '/ajax',
+      data: {
+        "url": $('#url').val()
       },
       dataType: 'json',
       success: function(data) {
-         console.log(data);
-         if (data.error) {
-             $('#loader').hide();
-             $('#content').show();
-             $('#content').attr('class', "panel panel-danger" );
-             $('.panel-heading').html('Sorry, I failed you');
-             $('.panel-body').html(data.error);
-         }else{
-             var panelBody = data.subs;
-             var panelHeading = '<b>Transcript found!!</b> ' +
-                                '<button   id="copy-btn" class="btn btn-success  pull-right" data-clipboard-text="' + panelBody +  '">' +
-                                'Copy here' + '</button>';
-
-             $('#loader').hide();
-             $('#content').show();
-             $('#content').attr('class', "panel panel-success" );
-             $('.panel-heading').html(panelHeading);
-             $('.panel-body').html(panelBody);
-             $('#copy').show();
-             new Clipboard('#copy-btn');
-         }
-      },
-      error: function(data) {
-          console.log(data);
-          var panelHeading = 'Sorry, I failed you';
-          var panelBody = 'Something went wrong';
+        console.log(data);
+        if (data.error) {
           $('#loader').hide();
           $('#content').show();
-          $('#content').attr('class', "panel panel-danger" );
-          $('.panel-heading').html();
+          $('#content').attr('class', "panel panel-danger");
+          $('.panel-heading').html('Sorry, I failed you');
+          $('.panel-body').html(data.error);
+        } else {
+          var panelBody = data.subs;
+          var panelHeading = '<b>Transcript found!!</b> ' +
+            '<button   id="copy-btn" class="btn btn-success  pull-right" data-clipboard-text="' + panelBody + '">' +
+            'Copy here' + '</button>';
+
+          $('#loader').hide();
+          $('#content').show();
+          $('#content').attr('class', "panel panel-success");
+          $('.panel-heading').html(panelHeading);
           $('.panel-body').html(panelBody);
+          $('#copy').show();
+          new Clipboard('#copy-btn');
+        }
+      },
+      error: function(data) {
+        console.log(data);
+        var panelHeading = 'Sorry, I failed you';
+        var panelBody = 'Something went wrong';
+        $('#loader').hide();
+        $('#content').show();
+        $('#content').attr('class', "panel panel-danger");
+        $('.panel-heading').html();
+        $('.panel-body').html(panelBody);
       }
-   });
-});
+    });
+  });
 </script>
